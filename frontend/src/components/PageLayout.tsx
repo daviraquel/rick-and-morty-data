@@ -2,6 +2,7 @@ import React, { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { fetchCharacters } from "../store/slices/characterSlice"
 import { fetchLocations } from "../store/slices/locationSlice"
+import { fetchEpisodes } from "../store/slices/episodeSlice"
 import { RootState, AppDispatch } from "../store"
 import Navbar from "./NavBar"
 
@@ -9,12 +10,14 @@ interface PageLayoutProps {
   children: React.ReactNode
   fetchCharactersData?: boolean
   fetchLocationsData?: boolean
+  fetchEpisodesData?: boolean
 }
 
 const PageLayout: React.FC<PageLayoutProps> = ({
   children,
   fetchCharactersData = false,
   fetchLocationsData = false,
+  fetchEpisodesData = false,
 }) => {
   const dispatch = useDispatch<AppDispatch>()
   const {
@@ -27,6 +30,11 @@ const PageLayout: React.FC<PageLayoutProps> = ({
     loading: locationsLoading,
     error: locationsError,
   } = useSelector((state: RootState) => state.locations)
+  const {
+    episodes,
+    loading: episodesLoading,
+    error: episodesError,
+  } = useSelector((state: RootState) => state.episodes)
 
   useEffect(() => {
     if (fetchCharactersData) {
@@ -35,10 +43,13 @@ const PageLayout: React.FC<PageLayoutProps> = ({
     if (fetchLocationsData) {
       dispatch(fetchLocations())
     }
-  }, [dispatch, fetchCharactersData, fetchLocationsData])
+    if (fetchEpisodesData) {
+      dispatch(fetchEpisodes())
+    }
+  }, [dispatch, fetchCharactersData, fetchLocationsData, fetchEpisodesData])
 
-  const loading = charactersLoading || locationsLoading
-  const error = charactersError || locationsError
+  const loading = charactersLoading || locationsLoading || episodesLoading
+  const error = charactersError || locationsError || episodesError
 
   return (
     <div>
@@ -50,6 +61,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
         React.cloneElement(children as React.ReactElement, {
           characters,
           locations,
+          episodes,
         })}
     </div>
   )

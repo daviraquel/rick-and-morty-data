@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit"
-import { fetchLocations as fetchLocationsFromController } from "../../controllers/locationController"
+import { fetchAllLocations } from "../../controllers/locationController"
 import { Location } from "../../types/Location"
 
 interface LocationState {
@@ -17,7 +17,7 @@ const initialState: LocationState = {
 export const fetchLocations = createAsyncThunk(
   "locations/fetchLocations",
   async () => {
-    return await fetchLocationsFromController()
+    return await fetchAllLocations()
   }
 )
 

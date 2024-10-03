@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit"
-import { fetchCharacters as fetchCharactersFromController } from "../../controllers/characterController"
+import { fetchAllCharacters } from "../../controllers/characterController"
 import { Character } from "../../types/Character"
 
 interface CharacterState {
@@ -17,7 +17,7 @@ const initialState: CharacterState = {
 export const fetchCharacters = createAsyncThunk(
   "characters/fetchCharacters",
   async () => {
-    return await fetchCharactersFromController()
+    return await fetchAllCharacters()
   }
 )
 

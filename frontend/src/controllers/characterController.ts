@@ -1,7 +1,15 @@
 import axios from "axios"
 import { Character } from "../types/Character"
 
-export const fetchCharacters = async (): Promise<Character[]> => {
-  const response = await axios.get("https://rickandmortyapi.com/api/character")
-  return response.data.results
+export const fetchAllCharacters = async (): Promise<Character[]> => {
+  let characters: Character[] = []
+  let nextUrl = "https://rickandmortyapi.com/api/character"
+
+  while (nextUrl) {
+    const response = await axios.get(nextUrl)
+    characters = [...characters, ...response.data.results]
+    nextUrl = response.data.info.next
+  }
+
+  return characters
 }
