@@ -15,14 +15,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
 
-      - name: Go to folder
-        run: cd frontend
-
-      - name: List content
-        run: ls
-
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd frontend
+          npm install
 
       - name: Build
         run: npm run build
