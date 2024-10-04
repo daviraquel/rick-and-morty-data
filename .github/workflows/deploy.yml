@@ -25,6 +25,11 @@ jobs:
           cd frontend
           npm run build
 
+      - name: Configure Git
+        run: |
+          git config --global user.email "daviraquel@gmail.com"
+          git config --global user.name "daviraquel"
+
       - name: Deploy to GitHub Pages
         run: |
           cd frontend
