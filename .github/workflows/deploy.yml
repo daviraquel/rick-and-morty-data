@@ -28,20 +28,6 @@ jobs:
           cd frontend
           npm run build
 
-      # - name: Configure Git
-      #   run: |
-      #     git config --global user.email "daviraquel@gmail.com"
-      #     git config --global user.name "daviraquel"
-      #     git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-
-      # - name: Deploy to GitHub Pages
-      #   run: |
-      #     cd frontend
-      #     npm install -g gh-pages
-      #     gh-pages -d dist
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
@@ -49,7 +35,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload dist folder
-          path: ".frontend/dist"
+          path: "frontend/dist"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
