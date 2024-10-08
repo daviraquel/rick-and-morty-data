@@ -11,8 +11,8 @@ import {
   LinearScale,
 } from "chart.js"
 import { Pie, Bar } from "react-chartjs-2"
-import { RootState } from "../store"
-import { analysisContainerClassName } from "../helpers/styles"
+import { RootState } from "../../store"
+import { analysisContainerClassName } from "../../helpers/styles"
 
 ChartJS.register(
   ArcElement,
@@ -23,39 +23,49 @@ ChartJS.register(
   LinearScale
 )
 
-const CharacterAnalysis: React.FC = () => {
-  const { characters } = useSelector((state: RootState) => state.characters)
+const LocationAnalysis: React.FC = () => {
+  const { locations } = useSelector((state: RootState) => state.locations)
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [chartType, setChartType] = useState<string>("pie")
   const pieChartRef = useRef<ChartJS<"pie">>(null)
   const barChartRef = useRef<ChartJS<"bar">>(null)
 
-  const speciesCount = characters.reduce(
-    (acc: Record<string, number>, character) => {
-      acc[character.species] = (acc[character.species] || 0) + 1
+  const typeCount = locations.reduce(
+    (acc: Record<string, number>, location) => {
+      acc[location.type] = (acc[location.type] || 0) + 1
       return acc
     },
     {}
   )
 
-  const totalCharacters = characters.length
+  const totalLocations = locations.length
 
-  const speciesArray = Object.keys(speciesCount).map((species) => ({
-    species,
-    count: speciesCount[species],
-    percentage: ((speciesCount[species] / totalCharacters) * 100).toFixed(2),
-  }))
-
-  speciesArray.sort(
-    (a, b) => parseFloat(b.percentage) - parseFloat(a.percentage)
+  const condensedTypeCount = Object.keys(typeCount).reduce(
+    (acc: Record<string, number>, type) => {
+      if (typeCount[type] > 2) {
+        acc[type] = typeCount[type]
+      } else {
+        acc["Unknown/Other"] = (acc["Unknown/Other"] || 0) + typeCount[type]
+      }
+      return acc
+    },
+    {}
   )
 
+  const typeArray = Object.keys(condensedTypeCount).map((type) => ({
+    type,
+    count: condensedTypeCount[type],
+    percentage: ((condensedTypeCount[type] / totalLocations) * 100).toFixed(2),
+  }))
+
+  typeArray.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage))
+
   const data = {
-    labels: speciesArray.map((item) => item.species),
+    labels: typeArray.map((item) => item.type),
     datasets: [
       {
-        label: "Character Species",
-        data: speciesArray.map((item) => item.count),
+        label: "Location Types",
+        data: typeArray.map((item) => item.count),
         backgroundColor: [
           "#1f77b4",
           "#ff7f0e",
@@ -71,13 +81,13 @@ const CharacterAnalysis: React.FC = () => {
         hoverOffset: 10,
         borderColor:
           hoveredIndex !== null
-            ? speciesArray.map((_, i) =>
+            ? typeArray.map((_, i) =>
                 i === hoveredIndex ? "black" : "transparent"
               )
             : [],
         borderWidth:
           hoveredIndex !== null
-            ? speciesArray.map((_, i) => (i === hoveredIndex ? 2 : 0))
+            ? typeArray.map((_, i) => (i === hoveredIndex ? 2 : 0))
             : [],
       },
     ],
@@ -94,7 +104,7 @@ const CharacterAnalysis: React.FC = () => {
           label: function (context: any) {
             const label = context.label || ""
             const value = context.raw
-            const percentage = ((value / totalCharacters) * 100).toFixed(2)
+            const percentage = ((value / totalLocations) * 100).toFixed(2)
             return `${label}: ${value} (${percentage}%)`
           },
         },
@@ -126,7 +136,7 @@ const CharacterAnalysis: React.FC = () => {
   return (
     <div className={`${analysisContainerClassName}`}>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-white">Characters by Species</h2>
+        <h2 className="text-2xl font-bold text-white">Locations by Type</h2>
         <select
           className="bg-gray-700 text-white p-2 rounded"
           value={chartType}
@@ -177,4 +187,4 @@ const CharacterAnalysis: React.FC = () => {
   )
 }
 
-export default CharacterAnalysis
+export default LocationAnalysis

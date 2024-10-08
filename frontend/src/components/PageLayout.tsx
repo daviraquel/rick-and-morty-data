@@ -4,21 +4,12 @@ import { fetchCharacters } from "../store/slices/characterSlice"
 import { fetchLocations } from "../store/slices/locationSlice"
 import { fetchEpisodes } from "../store/slices/episodeSlice"
 import { RootState, AppDispatch } from "../store"
-import Navbar from "./NavBar"
 
 interface PageLayoutProps {
   children: React.ReactNode
-  fetchCharactersData?: boolean
-  fetchLocationsData?: boolean
-  fetchEpisodesData?: boolean
 }
 
-const PageLayout: React.FC<PageLayoutProps> = ({
-  children,
-  fetchCharactersData = false,
-  fetchLocationsData = false,
-  fetchEpisodesData = false,
-}) => {
+const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>()
   const {
     characters,
@@ -37,23 +28,16 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   } = useSelector((state: RootState) => state.episodes)
 
   useEffect(() => {
-    if (fetchCharactersData) {
-      dispatch(fetchCharacters())
-    }
-    if (fetchLocationsData) {
-      dispatch(fetchLocations())
-    }
-    if (fetchEpisodesData) {
-      dispatch(fetchEpisodes())
-    }
-  }, [dispatch, fetchCharactersData, fetchLocationsData, fetchEpisodesData])
+    dispatch(fetchCharacters())
+    dispatch(fetchLocations())
+    dispatch(fetchEpisodes())
+  }, [dispatch])
 
   const loading = charactersLoading || locationsLoading || episodesLoading
   const error = charactersError || locationsError || episodesError
 
   return (
     <div>
-      <Navbar />
       {loading && <div>Loading...</div>}
       {error && <div>{error}</div>}
       {!loading &&

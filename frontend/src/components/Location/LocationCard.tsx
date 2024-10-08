@@ -1,6 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { Location } from "../types/Location"
+import { Location } from "../../types/Location"
 
 interface LocationCardProps {
   location: Location

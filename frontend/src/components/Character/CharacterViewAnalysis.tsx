@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef } from "react"
-import { useSelector } from "react-redux"
 import {
   Chart as ChartJS,
   ArcElement,
@@ -11,8 +10,12 @@ import {
   LinearScale,
 } from "chart.js"
 import { Pie, Bar } from "react-chartjs-2"
-import { RootState } from "../store"
-import { analysisContainerClassName } from "../helpers/styles"
+import { analysisContainerClassName } from "../../helpers/styles"
+import { Character } from "../../types/Character"
+
+interface ICharacterViewDataProps {
+  characters: Character[]
+}
 
 ChartJS.register(
   ArcElement,
@@ -23,49 +26,40 @@ ChartJS.register(
   LinearScale
 )
 
-const LocationAnalysis: React.FC = () => {
-  const { locations } = useSelector((state: RootState) => state.locations)
+export const CharacterViewAnalysis: React.FC<ICharacterViewDataProps> = ({
+  characters,
+}: ICharacterViewDataProps) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [chartType, setChartType] = useState<string>("pie")
   const pieChartRef = useRef<ChartJS<"pie">>(null)
   const barChartRef = useRef<ChartJS<"bar">>(null)
 
-  const typeCount = locations.reduce(
-    (acc: Record<string, number>, location) => {
-      acc[location.type] = (acc[location.type] || 0) + 1
+  const speciesCount = characters.reduce(
+    (acc: Record<string, number>, character) => {
+      acc[character.species] = (acc[character.species] || 0) + 1
       return acc
     },
     {}
   )
 
-  const totalLocations = locations.length
+  const totalCharacters = characters.length
 
-  const condensedTypeCount = Object.keys(typeCount).reduce(
-    (acc: Record<string, number>, type) => {
-      if (typeCount[type] > 2) {
-        acc[type] = typeCount[type]
-      } else {
-        acc["Unknown/Other"] = (acc["Unknown/Other"] || 0) + typeCount[type]
-      }
-      return acc
-    },
-    {}
-  )
-
-  const typeArray = Object.keys(condensedTypeCount).map((type) => ({
-    type,
-    count: condensedTypeCount[type],
-    percentage: ((condensedTypeCount[type] / totalLocations) * 100).toFixed(2),
+  const speciesArray = Object.keys(speciesCount).map((species) => ({
+    species,
+    count: speciesCount[species],
+    percentage: ((speciesCount[species] / totalCharacters) * 100).toFixed(2),
   }))
 
-  typeArray.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage))
+  speciesArray.sort(
+    (a, b) => parseFloat(b.percentage) - parseFloat(a.percentage)
+  )
 
   const data = {
-    labels: typeArray.map((item) => item.type),
+    labels: speciesArray.map((item) => item.species),
     datasets: [
       {
-        label: "Location Types",
-        data: typeArray.map((item) => item.count),
+        label: "Character Species",
+        data: speciesArray.map((item) => item.count),
         backgroundColor: [
           "#1f77b4",
           "#ff7f0e",
@@ -81,13 +75,13 @@ const LocationAnalysis: React.FC = () => {
         hoverOffset: 10,
         borderColor:
           hoveredIndex !== null
-            ? typeArray.map((_, i) =>
+            ? speciesArray.map((_, i) =>
                 i === hoveredIndex ? "black" : "transparent"
               )
             : [],
         borderWidth:
           hoveredIndex !== null
-            ? typeArray.map((_, i) => (i === hoveredIndex ? 2 : 0))
+            ? speciesArray.map((_, i) => (i === hoveredIndex ? 2 : 0))
             : [],
       },
     ],
@@ -104,7 +98,7 @@ const LocationAnalysis: React.FC = () => {
           label: function (context: any) {
             const label = context.label || ""
             const value = context.raw
-            const percentage = ((value / totalLocations) * 100).toFixed(2)
+            const percentage = ((value / totalCharacters) * 100).toFixed(2)
             return `${label}: ${value} (${percentage}%)`
           },
         },
@@ -136,7 +130,7 @@ const LocationAnalysis: React.FC = () => {
   return (
     <div className={`${analysisContainerClassName}`}>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-white">Locations by Type</h2>
+        <h2 className="text-2xl font-bold text-white">Characters by Species</h2>
         <select
           className="bg-gray-700 text-white p-2 rounded"
           value={chartType}
@@ -186,5 +180,3 @@ const LocationAnalysis: React.FC = () => {
     </div>
   )
 }
-
-export default LocationAnalysis

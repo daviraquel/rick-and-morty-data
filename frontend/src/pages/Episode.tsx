@@ -1,14 +1,14 @@
 import React from "react"
 import { useSelector } from "react-redux"
 import PageLayout from "../components/PageLayout"
-import EpisodeCard from "../components/EpisodeCard"
+import EpisodeCard from "../components/Episode/EpisodeCard"
 import { RootState } from "../store"
 
 const EpisodePage: React.FC = () => {
   const { episodes } = useSelector((state: RootState) => state.episodes)
 
   return (
-    <PageLayout fetchEpisodesData={true}>
+    <PageLayout>
       <div className="container mx-auto p-4">
         <h1 className="text-3xl font-bold mb-4">Episodes</h1>
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
