@@ -11,7 +11,7 @@ const CharacterTable: React.FC<CharacterTableProps> = ({
 }) => {
   const tableDataClassName = "text-ellipsis text-nowrap"
   return (
-    <table className="w-full">
+    <table className="w-full z-10 relative bg-gray-900">
       <thead className="sticky top-0 bg-gray-900">
         <tr>
           <th>ID</th>

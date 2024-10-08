@@ -5,6 +5,8 @@ import { fetchLocations } from "../store/slices/locationSlice"
 import { fetchEpisodes } from "../store/slices/episodeSlice"
 import { RootState, AppDispatch } from "../store"
 
+import backgroundImage from "../assets/bg.jpeg"
+
 interface PageLayoutProps {
   children: React.ReactNode
 }
@@ -38,6 +40,10 @@ const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
 
   return (
     <div>
+      <div
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+        className="bg-cover bg-center bg-no-repeat h-screen w-screen fixed z-0"
+      ></div>
       {loading && <div>Loading...</div>}
       {error && <div>{error}</div>}
       {!loading &&

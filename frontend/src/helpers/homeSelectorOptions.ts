@@ -1,2 +1,2 @@
 export const dataTypeOptions = ["Characters", "Locations", "Episodes"]
-export const viewTypeOptions = ["Cards", "Data", "Analysis"]
+export const viewTypeOptions = ["Analysis", "Cards", "Data"]

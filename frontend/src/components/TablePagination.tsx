@@ -63,7 +63,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
   }
 
   return (
-    <div className="flex justify-between items-center mt-4">
+    <div className="flex justify-between items-center mt-4 z-30">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}

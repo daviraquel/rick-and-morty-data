@@ -20,7 +20,7 @@ export const CharacterView: React.FC<ICharacterViewProps> = ({
   )
 
   return (
-    <div className="pt-2">
+    <div className="pt-2 bg-transparent">
       {selectedViewType === "Cards" && (
         <CharacterViewCards
           characters={characters}
